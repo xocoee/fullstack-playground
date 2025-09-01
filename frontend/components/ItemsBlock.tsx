@@ -18,6 +18,7 @@ const ItemsBlock = () => {
     setId(0);
     setName("");
   };
+  
   console.log('ITEMS', items)
   return (
     <div>
