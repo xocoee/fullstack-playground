@@ -12,7 +12,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       host: 'localhost',
       port: 5432,
       username: 'postgres', // 👈 твій користувач
-      password: '', // 👈 твій пароль
+      password: '5885', // 👈 твій пароль
       database: 'postgres', // або mydb, якщо хочеш працювати там
       autoLoadEntities: true,
       synchronize: true, // 👈 тільки для навчання (сам створить таблиці)
