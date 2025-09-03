@@ -8,9 +8,6 @@ export class Fish {
   @Column({ length: 100 })
   name: string;
 
-  @Column({ length: 50, nullable: true })
-  color: string;
-
-  @Column({ length: 50, nullable: true })
-  size: string;
+  @Column('numeric', { precision: 5, scale: 2 })
+  price: number;
 }

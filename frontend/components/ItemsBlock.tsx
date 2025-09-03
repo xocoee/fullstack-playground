@@ -1,33 +1,36 @@
 import { useEffect, useState } from "react";
 import { useItemsStore } from "../store/items";
-import ListItems from "./ListItems";
+//import ListItems from "./ListItems";
 
 const ItemsBlock = () => {
   const { items, loading, fetchItems, addItem } = useItemsStore();
 
-  const [id, setId] = useState<number>(0);
+  const [price, setPrice] = useState<number>(0);
   const [name, setName] = useState<string>("");
-
+  console.log("price", price, typeof price);
   useEffect(() => {
     fetchItems();
   }, [fetchItems, addItem]);
 
   const handleAdd = async () => {
     if (!name) return alert("Name is required");
-    await addItem({ id, name });
-    setId(0);
+    await addItem({ name, price });
+    setPrice(0);
     setName("");
   };
-  
-  console.log('ITEMS', items)
+
+  console.log("ITEMS", items);
   return (
     <div>
       <div style={{ marginBottom: "1rem" }}>
         <input
           type="number"
-          placeholder="ID"
-          value={id}
-          onChange={(e) => setId(Number(e.target.value))}
+          placeholder="Price"
+          value={price}
+          onChange={(e) =>
+            setPrice(parseFloat(e.target.value.replace(",", ".")))
+          }
+          step="0.01"
         />
         <input
           type="text"
@@ -41,10 +44,9 @@ const ItemsBlock = () => {
       </div>
 
       {items.map((el) => (
-          <div>
-      <h2>id: {el.id}</h2>
-      <h1>name: {el.name}</h1>
-    </div>
+        <div
+          key={el.id}
+        >{`Номер: ${el.id}, Назва: ${el.name}, Ціна: ${el.price}`}</div>
       ))}
     </div>
   );
