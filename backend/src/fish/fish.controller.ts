@@ -6,9 +6,13 @@ import {
   Body,
   Patch,
   Delete,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { FishService } from './fish.service';
 import { Fish } from './entities/fish.entity';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { memoryStorage } from 'multer';
 
 @Controller('fish')
 export class FishController {
@@ -25,8 +29,18 @@ export class FishController {
   }
 
   @Post()
-  create(@Body() body: Partial<Fish>): Promise<Fish> {
-    return this.fishService.create(body);
+  @UseInterceptors(FileInterceptor('photo', { storage: memoryStorage() }))
+  async create(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() body: Partial<Fish>,
+  ): Promise<Fish> {
+    const fish = new Fish();
+    fish.name = body.name || '';
+    fish.price = Number(body.price);
+    if (file) {
+      fish.photo = file.buffer; // саме Buffer для bytea
+    }
+    return this.fishService.create(fish);
   }
 
   @Patch(':id')

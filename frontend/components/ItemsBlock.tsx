@@ -7,6 +7,7 @@ const ItemsBlock = () => {
 
   const [price, setPrice] = useState<number>(0);
   const [name, setName] = useState<string>("");
+  const [photo, setPhoto] = useState<File | null>(null);
   console.log("price", price, typeof price);
   useEffect(() => {
     fetchItems();
@@ -14,9 +15,19 @@ const ItemsBlock = () => {
 
   const handleAdd = async () => {
     if (!name) return alert("Name is required");
-    await addItem({ name, price });
+
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("price", String(price));
+    if (photo) {
+      formData.append("photo", photo);
+    }
+
+    await addItem(formData);
+
     setPrice(0);
     setName("");
+    setPhoto(null);
   };
 
   console.log("ITEMS", items);
@@ -37,6 +48,15 @@ const ItemsBlock = () => {
           placeholder="Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
+        />
+         <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            if (e.target.files && e.target.files[0]) {
+              setPhoto(e.target.files[0]);
+            }
+          }}
         />
         <button onClick={handleAdd} disabled={loading}>
           {loading ? "Loading..." : "Add"}

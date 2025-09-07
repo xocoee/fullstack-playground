@@ -1,8 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
 
-
-
 interface ItemsStore {
   items: any[];
   loading: boolean;
@@ -31,7 +29,12 @@ export const useItemsStore = create<ItemsStore>((set) => ({
       set({ loading: true });
       const response = await axios.post<any>(
         "http://localhost:3000/fish",
-        newItem
+        newItem,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
       set((state) => ({ items: [...state.items, response.data] }));
     } catch (error) {
