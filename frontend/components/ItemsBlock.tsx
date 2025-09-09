@@ -49,7 +49,7 @@ const ItemsBlock = () => {
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
-         <input
+        <input
           type="file"
           accept="image/*"
           onChange={(e) => {
@@ -64,9 +64,21 @@ const ItemsBlock = () => {
       </div>
 
       {items.map((el) => (
-        <div
-          key={el.id}
-        >{`Номер: ${el.id}, Назва: ${el.name}, Ціна: ${el.price}`}</div>
+        <div key={el.id} style={{ marginBottom: "1rem" }}>
+          <div>{`Номер: ${el.id}, Назва: ${el.name}, Ціна: ${el.price}`}</div>
+          {el.photo_url && (
+            <img
+              src={el.photo_url}
+              alt={el.name}
+              style={{
+                width: "100px",
+                height: "100px",
+                objectFit: "cover",
+                marginTop: "0.5rem",
+              }}
+            />
+          )}
+        </div>
       ))}
     </div>
   );

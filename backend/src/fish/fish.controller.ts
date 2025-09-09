@@ -13,6 +13,8 @@ import { FishService } from './fish.service';
 import { Fish } from './entities/fish.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Controller('fish')
 export class FishController {
@@ -31,16 +33,29 @@ export class FishController {
   @Post()
   @UseInterceptors(FileInterceptor('photo', { storage: memoryStorage() }))
   async create(
-    @UploadedFile() file: Express.Multer.File,
-    @Body() body: Partial<Fish>,
-  ): Promise<Fish> {
-    const fish = new Fish();
-    fish.name = body.name || '';
-    fish.price = Number(body.price);
-    if (file) {
-      fish.photo = file.buffer; // саме Buffer для bytea
+    @Body() body: { name: string; price: number },
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    let photoUrl: string | undefined;
+
+    if (file && file.buffer) {
+      const uploadsDir = path.join(__dirname, '../../uploads');
+      if (!fs.existsSync(uploadsDir)) {
+        fs.mkdirSync(uploadsDir, { recursive: true });
+      }
+
+      const fileName = `${Date.now()}-${file.originalname}`;
+      const filePath = path.join(uploadsDir, fileName);
+
+      fs.writeFileSync(filePath, file.buffer); // ✅ тут Buffer, не undefined
+      photoUrl = `http://localhost:3000/uploads/${fileName}`;
     }
-    return this.fishService.create(fish);
+
+    return this.fishService.create({
+      name: body.name,
+      price: Number(body.price),
+      photo_url: photoUrl, // undefined якщо фото немає
+    });
   }
 
   @Patch(':id')

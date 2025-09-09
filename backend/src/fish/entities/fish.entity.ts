@@ -11,6 +11,6 @@ export class Fish {
   @Column('numeric', { precision: 5, scale: 2 })
   price: number;
 
-  @Column({ type: 'bytea', nullable: true })
-  photo: Buffer;
+  @Column({ nullable: true })
+  photo_url: string;
 }
