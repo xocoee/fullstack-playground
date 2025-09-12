@@ -15,6 +15,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import * as fs from 'fs';
 import * as path from 'path';
+import { randomBytes } from 'crypto';
 
 @Controller('fish')
 export class FishController {
@@ -44,7 +45,7 @@ export class FishController {
         fs.mkdirSync(uploadsDir, { recursive: true });
       }
 
-      const fileName = `${Date.now()}-${file.originalname}`;
+      const fileName = randomBytes(16).toString('hex');
       const filePath = path.join(uploadsDir, fileName);
 
       fs.writeFileSync(filePath, file.buffer); // ✅ тут Buffer, не undefined
